@@ -22,42 +22,42 @@ app.get("/", (req, res) => {
   res.send("Hello There");
 });
 
-app.get("/articles", (req, res) => {
-  Article.find({}, (err, articles) => {
-    if (!err) {
-      res.send(articles);
-    } else {
-      res.send(err);
-    }
-  });
-});
+app
+  .route("/articles")
+  .get((req, res) => {
+    Article.find({}, (err, articles) => {
+      if (!err) {
+        res.send(articles);
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .post((req, res) => {
+    console.log(req.body.title);
+    console.log(req.body.content);
 
-app.post("/articles", (req, res) => {
-  console.log(req.body.title);
-  console.log(req.body.content);
-
-  const newArticle = new Article({
-    title: req.body.title,
-    content: req.body.content,
+    const newArticle = new Article({
+      title: req.body.title,
+      content: req.body.content,
+    });
+    newArticle.save((err) => {
+      if (!err) {
+        res.send("Successfully Saved new article");
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .delete((req, res) => {
+    Article.deleteMany({}, (err) => {
+      if (!err) {
+        res.send("Deleted all articles succesfully");
+      } else {
+        res.send(err);
+      }
+    });
   });
-  newArticle.save((err) => {
-    if (!err) {
-      res.send("Successfully Saved new article");
-    } else {
-      res.send(err);
-    }
-  });
-});
-
-app.delete("/articles", (req, res) => {
-  Article.deleteMany({}, (err) => {
-    if (!err) {
-      res.send("Deleted all articles succesfully");
-    } else {
-      res.send(err);
-    }
-  });
-});
 
 app.listen(4000, () => {
   console.log("Server @4000");
