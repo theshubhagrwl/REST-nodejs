@@ -59,6 +59,56 @@ app
     });
   });
 
+//Getting Specific Article//
+app
+  .route("/articles/:articleTitle")
+
+  .get((req, res) => {
+    Article.findOne({ title: req.params.articleTitle }, (err, foundArticle) => {
+      if (!err) {
+        res.send(foundArticle);
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .put((req, res) => {
+    Article.updateOne(
+      { title: req.params.articleTitle },
+      { title: req.body.title, content: req.body.content },
+      // { overwrite: true },
+      (err, success) => {
+        if (!err) {
+          res.send("Updated Article");
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  })
+  .patch((req, res) => {
+    Article.updateOne(
+      { title: req.params.articleTitle },
+      { $set: req.body },
+      (err, result) => {
+        if (!err) {
+          res.send("Patched!");
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  })
+  .delete((req, res) => {
+    Article.deleteOne({ title: req.params.articleTitle }, (err, result) => {
+      if (!err) {
+        res.send("Deleted");
+      } else {
+        res.send(err);
+      }
+    });
+  });
+
 app.listen(4000, () => {
   console.log("Server @4000");
 });
